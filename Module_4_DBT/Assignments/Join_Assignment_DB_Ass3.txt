@@ -1,0 +1,172 @@
+show databases;
+use labassignment;
+select * from departments;
+select * from countries;
+select * from locations;
+
+-- 1.	Write a query to find the addresses (location_id, street_address, city, state_province, country_name) of all the departments.
+
+select * from countries;
+select * from locations;
+select * from departments;
+
+select departments.location_id , street_address,city,state_province,country_name from countries,locations,departments
+where countries.country_id = locations.country_id and departments.location_id = locations.location_id group by departments.location_id ;
+
+-- 2.	Write a query to find the name (first_name, last name), department ID and name of all the employees.
+
+select * from departments;
+select * from employees;
+
+select employees.employee_id,employees.department_id, first_name,last_name from departments,employees 
+where departments.department_id = employees.department_id;
+
+-- 3.	Write a query to find the name (first_name, last_name), job, department ID and name of the employees who works in Southlake.
+
+select * from employees;
+select * from jobs;
+select * from locations;
+select * from departments;
+
+select employees.first_name,employees.last_name,jobs.job_title,employees.department_id 
+from employees,jobs,locations,departments
+where  employees.department_id= departments.department_id and jobs.job_id = employees.job_id
+and locations.location_id=departments.location_id and locations.city = 'Southlake';
+
+
+-- 4.	Write a query to find the employee id, name (last_name) along with their manager_id and name (last_name).
+
+select * from employees;
+
+select abc.employee_id,abc.last_name, xyz.employee_id as Manager_id, xyz.last_name
+from employees as abc ,employees as xyz
+where abc.manager_id = xyz.employee_id;
+
+-- 5.	Write a query to find the name (first_name, last_name) and hire date of the employees who was hired after 'Jones-(195).(1987-09-20)
+
+select * from employees;
+
+select employees.first_name, employees.last_name, employees.hire_date from employees where hire_date > 
+(select hire_date from employees where first_name = 'jones' or last_name='jones');
+
+-- sol2
+/*
+
+select comp.first_name, comp.last_name from employees Sort, employees comp 
+where comp.hire_date > sort.hire_date and sort.last_name = 'Jones';
+
+*/
+
+select abc.first_name, abc.last_name, abc.hire_date from employees as abc , employees as xyz
+where  abc.hire_date > xyz.hire_date and  xyz.last_name='jones';
+
+
+-- 6.	Write a query to get the department name and number of employees in the department.
+
+select * from employees;
+select * from departments;
+
+select departments.department_name,employees.department_id, count(employees.department_id)
+from employees,departments
+where employees.department_id = departments.department_id
+group by department_name;
+
+select department_id,count(department_id) from employees group by department_id order by department_id; -- to verify
+
+
+-- by sub - query remain-------
+select departments.department_name from departments;
+
+select count(*) from employees;
+
+select department_id,count(department_id) from employees group by department_id order by department_id;
+
+-- 7.	Write a query to find the employee ID, job title, number of days between ending date 
+-- 		and starting date for all jobs in department 90.
+
+select * from jobs;
+select * from job_history;
+
+select datediff('1994-07-01','1998-12-31'),datediff('1987-09-17','1993-06-17');
+
+select job_history.employee_id,job_history.job_id, jobs.job_title,datediff(end_date,start_date) as num_of_days
+from jobs,job_history 
+where jobs.job_id = job_history.job_id and job_history.department_id=90;
+
+-- 8.	Write a query to display the department ID and name and first name of manager. 
+
+select * from employees;
+select * from departments;
+
+select departments.department_id, employees.manager_id,departments.department_name , employees.last_name from employees,departments
+where employees.manager_id = departments.manager_id ;
+
+-- 9.	Write a query to display the department name, manager name, and city.
+  
+select * from employees;
+select * from locations;
+select * from departments;
+
+select employees.department_id , departments.department_name,employees.first_name, employees.last_name ,locations.city
+from employees,departments,locations 
+where employees.manager_id = departments.manager_id and locations.location_id = departments.location_id;
+
+
+-- 10. 	Write a query to display the job title and average salary of employees.
+
+select * from employees;
+select * from jobs;
+
+select avg(salary)  from employees;
+
+select jobs.job_title, avg(salary) from employees,jobs where employees.job_id = jobs.job_id group by employees.job_id;
+
+
+-- 11. 	Write a query to display job title, employee name, and the difference between salary of the employee and minimum salary for the job.
+
+select * from employees ;
+select * from jobs;
+
+select jobs.job_title, employees.first_name, employees.last_name,employees.salary-jobs.min_salary
+from employees,jobs 
+where employees.job_id=jobs.job_id;
+
+-- 12. 	Write a query to display the job history that were done by any employee who is currently 
+--      drawing more than 10000 of salary.
+
+select * from employees;
+select * from job_history;
+
+select job_history.employee_id,job_history.start_date,job_history.end_date,job_history.job_id, employees.salary ,job_history.department_id
+from job_history,employees 
+where employees.employee_id=job_history.employee_id and employees.salary > 10000;
+
+-- 13. 	Write a query to display department name, name (first_name, last_name), hire date, 
+--      salary of the manager for all managers whose experience is more than 15 years.
+
+select * from employees;
+select * from job_history;
+select * from departments;
+
+select datediff(sysdate(),hire_date) from employees;
+
+select departments.department_name,employees.first_name, employees.last_name,employees.hire_date, employees.salary
+from employees,departments
+where employees.department_id = departments.department_id 
+and employees.employee_id = departments.manager_id
+and(sysdate()-hire_date) > 15*365 ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
